@@ -51,11 +51,13 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public ResponseEntity deleteUser(@PathVariable int id) {
         User deletedUser = service.deleteById(id);
 
         if (deletedUser == null) {
             throw new UserNotFoundException(String.format("ID[%s] not found", id));
         }
+
+        return ResponseEntity.noContent().build();
     }
 }
