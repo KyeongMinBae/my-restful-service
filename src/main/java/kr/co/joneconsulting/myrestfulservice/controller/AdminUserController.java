@@ -9,7 +9,6 @@ import kr.co.joneconsulting.myrestfulservice.exception.UserNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tools.jackson.databind.ser.FilterProvider;
