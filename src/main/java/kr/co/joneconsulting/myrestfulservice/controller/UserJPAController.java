@@ -1,16 +1,16 @@
 package kr.co.joneconsulting.myrestfulservice.controller;
 
+import jakarta.validation.Valid;
+import kr.co.joneconsulting.myrestfulservice.bean.User;
 import kr.co.joneconsulting.myrestfulservice.exception.UserNotFoundException;
 import kr.co.joneconsulting.myrestfulservice.repository.UserRepository;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ public class UserJPAController {
 
     // /jpa/users/{id}
     @GetMapping("/users/{id}")
-    public ResponseEntity retrieveUsersById(@PathVariable int id) {
+    public ResponseEntity<EntityModel> retrieveUsersById(@PathVariable int id) {
         Optional<User> user = userRepository.findById(id);
 
         if (!user.isPresent()) {
@@ -49,4 +49,23 @@ public class UserJPAController {
 
         return ResponseEntity.ok(entityModel);
     }
+
+    @DeleteMapping("/users/{id}")
+    public void deleteUserById(@PathVariable int id) {
+        userRepository.deleteById(id);
+    }
+
+    // /jpa/users
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User savedUser = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
 }
