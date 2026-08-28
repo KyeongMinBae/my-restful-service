@@ -1,6 +1,7 @@
 package kr.co.joneconsulting.myrestfulservice.controller;
 
 import jakarta.validation.Valid;
+import kr.co.joneconsulting.myrestfulservice.bean.Post;
 import kr.co.joneconsulting.myrestfulservice.bean.User;
 import kr.co.joneconsulting.myrestfulservice.exception.UserNotFoundException;
 import kr.co.joneconsulting.myrestfulservice.repository.UserRepository;
@@ -66,6 +67,16 @@ public class UserJPAController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/users/{id}/posts")
+    public List<Post> retrieveAllPostsByUser(@PathVariable int id) {
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()) {
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        return user.get().getPosts();
     }
 
 }
